@@ -60,7 +60,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
-  if (!(body&&body.name&&body.number)) {
+  if (!body) {
     return response.status(400).json({ 
       error: 'content missing' 
     })
@@ -70,7 +70,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
 
-  Phone.findByIdAndUpdate(request.params.id, phone, { new: true })
+  Phone.findByIdAndUpdate(request.params.id, phone, { new: true, runValidators: true, context: 'query' })
     .then(updatedPhone => {
       if (updatedPhone) {
         response.json(updatedPhone)
