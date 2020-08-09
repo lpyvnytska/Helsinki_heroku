@@ -13,8 +13,16 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
   })
 
 const phoneSchema = new mongoose.Schema({
-    name: String,
-    number: String
+    name: {
+      type: String,
+      minlength: 5,
+      required: true
+    },
+    number: {
+      type: String,
+      minlength: 3,
+      required: true
+    }
   })
 
 phoneSchema.set('toJSON', {

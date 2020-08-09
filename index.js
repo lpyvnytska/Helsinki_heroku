@@ -5,6 +5,7 @@ var morgan = require('morgan')
 const cors = require('cors')
 const Phone = require('./models/phone')
 const errorHandler = require('./errorHandler')
+const unknownEndpoint = require('./unknowEndpoint')
 
 app.use(cors())
 app.use(express.json())
@@ -81,27 +82,20 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
-    if (!(body&&body.name&&body.number)) {
-      return response.status(400).json({ 
-        error: 'content missing' 
-      })
-    }
     const phone = new Phone ({
       name: body.name,
       number: body.number
     })
 
-    phone.save().then(savedPhone => {
+    phone.save()
+    .then(savedPhone => {
       response.status(201).json(savedPhone)
     })
+    .catch(error => next(error))
   })
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
-  
+ 
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
